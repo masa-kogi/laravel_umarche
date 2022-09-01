@@ -88,8 +88,6 @@ class CartController extends Controller
             ]);
         }
 
-        dd('test');
-
         // dd($lineItems);
         \Stripe\Stripe::setApiKey(env('STRIPE_SECRET_KEY'));
 
