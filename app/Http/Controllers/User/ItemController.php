@@ -14,6 +14,17 @@ class ItemController extends Controller
     public function __construct()
     {
         $this->middleware('auth:users');
+
+        $this->middleware(function ($request, $next) {
+            $id = $request->route()->parameter('item');
+            if (!is_null($id)) {
+                $itemId = Product::availableItems()->where('products.id', $id)->exists();
+                if (!$itemId) {
+                    abort(404);
+                }
+            }
+            return $next($request);
+        });
     }
 
     public function index()
@@ -29,7 +40,7 @@ class ItemController extends Controller
         $quantity = Stock::where('product_id', $product->id)
             ->sum('quantity');
 
-        if($quantity > 9) {
+        if ($quantity > 9) {
             $quantity = 9;
         }
 
