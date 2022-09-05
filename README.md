@@ -56,3 +56,19 @@ php artisan serve
 php artisan storage:linkでstorageフォルダにリンク後、storage/app/public/productsフォルダ内に保存すると表示されます(productsフォルダがない場合は作成してください)。
 
 ショップの画像も表示する場合は、storage/app/public/shopsフォルダを作成し、画像を保存してください。
+
+## section07の補足
+
+決済のテストとしてstripeを利用しています。
+必要な場合は.envにstripeの情報を追記してください。
+（講座内で解説しています）
+
+## section0８の補足
+
+メールのテストとしてmailtrapを利用しています。
+必要な場合は.envにmailtrapの情報を追記してください。
+（講座内で解説しています）
+
+メール処理には時間が掛かるので、キューを使用しています。
+
+必要な場合はphp artisan queue:workでワーカーを立ち上げて動作確認するようにしてください。
