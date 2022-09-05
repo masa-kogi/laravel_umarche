@@ -21,7 +21,7 @@ class CartService
             $product = Product::where('id', $item->product_id)->select('id', 'name', 'price')->get()->toArray();
             $quantity = Cart::where('product_id', $item->product_id)->select('quantity')->get()->toArray();
             $result = array_merge($product[0], $ownerInfo, $quantity[0]);
-            dd($result);
+            // dd($result);
 
             array_push($products, $result);
         }
