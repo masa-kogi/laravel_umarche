@@ -56,14 +56,14 @@ class ItemController extends Controller
         $product = Product::findOrFail($id);
         $quantity = Stock::where('product_id', $product->id)
             ->sum('quantity');
-        $rating = round(DB::table('item_reviews')
+        $avgScore = round(DB::table('item_reviews')
             ->where('item_id', $product->id)
-            ->avg('rating'), 1);
+            ->avg('score'), 1);
 
         if ($quantity > 9) {
             $quantity = 9;
         }
 
-        return view('user.show', compact('product', 'quantity', 'rating'));
+        return view('user.show', compact('product', 'quantity', 'avgScore'));
     }
 }

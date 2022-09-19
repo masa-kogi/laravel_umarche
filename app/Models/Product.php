@@ -93,22 +93,22 @@ class Product extends Model
             ->groupBy('product_id')
             ->having('quantity', '>', 1);
 
-        $ratings = DB::table('item_reviews')
-            ->select('item_id', DB::raw('avg(rating) as avg_rating'))
+        $avgScores = DB::table('item_reviews')
+            ->select('item_id', DB::raw('round(avg(score), 1) as avg_score'))
             ->groupBy(('item_id'));
 
         return $query->joinSub($stocks, 'stock', function ($join) {
             $join->on('products.id', '=', 'stock.product_id');
         })
-            ->joinSub($ratings, 'rating', function ($join) {
-                $join->on('products.id', '=', 'rating.item_id');
+            ->joinSub($avgScores, 'avg_score', function ($join) {
+                $join->on('products.id', '=', 'avg_score.item_id');
             })
             ->join('shops', 'products.shop_id', '=', 'shops.id')
             ->join('secondary_categories', 'products.secondary_category_id', '=', 'secondary_categories.id')
             ->join('images as image1', 'products.image1', '=', 'image1.id')
             ->where('shops.is_selling', true)
             ->where('products.is_selling', true)
-            ->select('products.id as id', 'products.name as name', 'products.price', 'products.sort_order as sort_order', 'products.information', 'secondary_categories.name as category', 'image1.filename as filename', 'rating.avg_rating as avg_rating');
+            ->select('products.id as id', 'products.name as name', 'products.price', 'products.sort_order as sort_order', 'products.information', 'secondary_categories.name as category', 'image1.filename as filename', 'avg_score.avg_score as avg_score');
     }
 
     public function scopeSortOrder($query, $sortOrder)

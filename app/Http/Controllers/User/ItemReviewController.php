@@ -36,13 +36,11 @@ class ItemReviewController extends Controller
             ->orderBy('created_at', 'desc')
             ->get();
 
-        $rating = round(DB::table('item_reviews')
+        $avgScore = round(DB::table('item_reviews')
             ->where('item_id', $item->id)
-            ->avg('rating'), 1);
+            ->avg('score'), 1);
 
-        // dd($rating);
-
-        return view('user.items.reviews.index', compact('user', 'item', 'reviews', 'rating'));
+        return view('user.items.reviews.index', compact('user', 'item', 'reviews', 'avgScore'));
     }
 
     /**
@@ -55,11 +53,11 @@ class ItemReviewController extends Controller
         $user = User::findOrFail(Auth::id());
         $item = Product::findOrFail($id);
 
-        $rating = round(DB::table('item_reviews')
+        $avgScore = round(DB::table('item_reviews')
             ->where('item_id', $item->id)
-            ->avg('rating'), 1);
+            ->avg('score'), 1);
 
-        return view('user.items.reviews.create', compact('user', 'item', 'rating'));
+        return view('user.items.reviews.create', compact('user', 'item', 'avgScore'));
     }
 
     /**
@@ -76,7 +74,7 @@ class ItemReviewController extends Controller
                 ItemReview::create([
                     'item_id' => $id,
                     'user_id' => Auth::id(),
-                    'rating' => $request->score,
+                    'score' => round($request->score, 1),
                     'comment' => $request->comment,
                 ]);
             }, 2);
@@ -110,14 +108,14 @@ class ItemReviewController extends Controller
         $item = Product::findOrFail($item_id);
         $review = ItemReview::findOrFail($review_id);
 
-        $rating = round(DB::table('item_reviews')
+        $avgScore = round(DB::table('item_reviews')
             ->where('item_id', $item->id)
-            ->avg('rating'), 1);
+            ->avg('score'), 1);
 
         return view('user.items.reviews.edit', compact(
             'item',
             'review',
-            'rating'
+            'avgScore'
         ));
     }
 
@@ -134,7 +132,7 @@ class ItemReviewController extends Controller
 
         try {
             DB::transaction(function () use ($request, $review) {
-                $review->rating = $request->rating;
+                $review->score = $request->score;
                 $review->comment = $request->comment;
                 $review->save();
             }, 2);

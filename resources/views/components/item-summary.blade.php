@@ -16,8 +16,8 @@
                         </div>
                         <div class="flex items-center">
                             <div class="text-sm text-gray-500 mr-2">評価: </div>
-                            <div id="star-avg-rating" class="flex" data-score="{{ $rating }}"></div>
-                            <div class="ml-2">{{ $rating }}</div>
+                            <div id="star-avg-score" class="flex" data-score="{{ $avgScore }}"></div>
+                            <div class="ml-2">{{ $avgScore }}</div>
                         </div>
 
                     </div>

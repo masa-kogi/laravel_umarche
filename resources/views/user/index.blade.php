@@ -76,9 +76,13 @@
                                     <x-thumbnail filename="{{ $product->filename ?? '' }}" type="products" />
                                     <div class="mt-4">
                                         <h3 class="text-gray-500 text-xs tracking-widest title-font mb-1">{{ $product->category }}</h3>
-                                        <div class="flex justify-between">
-                                            <h2 class="text-gray-900 title-font text-lg font-medium">{{ $product->name }}</h2>
-                                            <h2 class="text-gray-900 title-font text-lg font-medium">{{ round($product->avg_rating, 1) }}<span class="text-sm">点</span></h2>
+
+                                        <h2 class="text-gray-900 title-font text-lg font-medium">{{ $product->name }}</h2>
+                                        <!-- <h2 class="text-gray-900 title-font text-lg font-medium">{{ round($product->avg_score, 1) }}<span class="text-sm">点</span></h2> -->
+                                        <div class="flex items-center">
+                                            <div class="text-sm text-gray-500 mr-2">評価: </div>
+                                            <div class="star-avg-score-index flex" data-score="{{ $product->avg_score }}"></div>
+                                            <div class="ml-2">{{ $product->avg_score }}</div>
                                         </div>
                                         <p class="mt-1">{{ number_format($product->price) }}<span class="text-sm text-gray-700">円(税込)</span></p>
                                     </div>
@@ -108,4 +112,5 @@
             this.form.submit()
         })
     </script>
+    <script src="{{ mix('js/star-rating.js') }}"></script>
 </x-app-layout>

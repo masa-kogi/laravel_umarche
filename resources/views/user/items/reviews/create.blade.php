@@ -4,7 +4,7 @@
             {{ __('Dashboard') }}
         </h2>
     </x-slot>
-    <x-item-summary :item="$item" :rating="$rating" />
+    <x-item-summary :item="$item" :avgScore="$avgScore" />
     <div class="py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
@@ -26,8 +26,10 @@
 
                             <div class="p-2 w-1/2 mx-auto">
                                 <label for="rating" class="leading-7 text-sm text-gray-600">点数 ※必須</label>
-                                <div id="star-post" class="flex"></div>
-                                <input name="rating" type="hidden">
+                                <div class="flex">
+                                    <div id="star-score-post" class="flex"></div>
+                                    <input id="hint" name="rating" class="ml-3">
+                                </div>
                             </div>
 
                             <div class="p-2 w-1/2 mx-auto">

@@ -19,7 +19,7 @@ class ItemReviewFactory extends Factory
                 return Product::all()->random();
             },
             'user_id' => $this->faker->numberBetween(1, 6),
-            'rating' => $this->faker->numberBetween(1, 5),
+            'score' => $this->faker->randomFloat(1, 0, 5),
             'comment' => $this->faker->realText,
         ];
     }

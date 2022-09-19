@@ -24,7 +24,7 @@ class CreateItemReviewsTable extends Migration
                 ->onUpdate('cascade')
                 ->onDelete('cascade');
             $table->text('comment');
-            $table->double('rating');
+            $table->float('score');
             $table->timestamps();
         });
     }

@@ -5,7 +5,7 @@
         </h2>
     </x-slot>
 
-    <x-item-summary :item="$item" :rating=$rating />
+    <x-item-summary :item="$item" :avgScore=$avgScore />
 
     <div class="py-12">
         <div class="mt-3 max-w-7xl mx-auto sm:px-6 lg:px-8">
@@ -22,8 +22,8 @@
                                         <!-- <span class="mt-1 text-gray-700 text-md text-center">評価: {{ $review->rating }}</span> -->
                                         <div class="flex items-center">
                                             <div class="text-sm text-gray-500 mr-2">評価: </div>
-                                            <div id="star-rating" class="flex" data-score="{{ $review->rating }}"></div>
-                                            <div class="ml-2">{{ $review->rating }}</div>
+                                            <div class="star-score flex" data-score="{{ $review->score }}"></div>
+                                            <div class="ml-2">{{ $review->score }}</div>
                                         </div>
                                     </div>
                                     <div class="md:flex-grow">

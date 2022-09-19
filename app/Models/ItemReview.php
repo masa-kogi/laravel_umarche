@@ -12,7 +12,7 @@ class ItemReview extends Model
     protected $fillable = [
         'item_id',
         'user_id',
-        'rating',
+        'score',
         'comment',
     ];
 
