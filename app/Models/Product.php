@@ -9,6 +9,7 @@ use App\Models\SecondaryCategory;
 use App\Models\Image;
 use App\Models\Stock;
 use App\Models\User;
+use App\Models\Maker;
 use App\Models\ItemReview;
 use Illuminate\Support\Facades\DB;
 
@@ -19,6 +20,7 @@ class Product extends Model
 
     protected $fillable = [
         'shop_id',
+        'maker_id',
         'name',
         'information',
         'price',
@@ -81,10 +83,10 @@ class Product extends Model
             ->withPivot(['id', 'quantity']);
     }
 
-    // public function getAverageRatingAttribute()
-    // {
-    //     return $this->attributes['avg_raging'] = $this->reviews->avg('raging');
-    // }
+    public function maker()
+    {
+        return $this->belongsTo(Maker::class);
+    }
 
     public function scopeAvailableItems($query)
     {
