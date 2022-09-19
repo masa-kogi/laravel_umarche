@@ -1,5 +1,7 @@
 {
     "/js/app.js": "/js/app.js",
     "/js/swiper.js": "/js/swiper.js",
+    "/js/read-more.js": "/js/read-more.js",
+    "/js/star-rating.js": "/js/star-rating.js",
     "/css/app.css": "/css/app.css"
 }

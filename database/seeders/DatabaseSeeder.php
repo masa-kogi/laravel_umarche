@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\ItemReview;
 use Illuminate\Database\Seeder;
 use App\Models\Stock;
 use App\Models\Product;
@@ -25,9 +26,11 @@ class DatabaseSeeder extends Seeder
             // ProductSeeder::class,
             // StockSeeder::class,
             UserSeeder::class,
+            // ItemReviewSeeder::class,
         ]);
 
         Product::factory(100)->create();
         Stock::factory(100)->create();
+        ItemReview::factory(100)->create();
     }
 }

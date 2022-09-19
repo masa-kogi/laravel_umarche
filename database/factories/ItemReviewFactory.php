@@ -2,11 +2,10 @@
 
 namespace Database\Factories;
 
-use App\Models\Stock;
 use App\Models\Product;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
-class StockFactory extends Factory
+class ItemReviewFactory extends Factory
 {
     /**
      * Define the model's default state.
@@ -16,11 +15,12 @@ class StockFactory extends Factory
     public function definition()
     {
         return [
-            'product_id' => function () {
+            'item_id' => function () {
                 return Product::all()->random();
             },
-            'type' => $this->faker->numberBetween(1, 2),
-            'quantity' => $this->faker->randomNumber,
+            'user_id' => $this->faker->numberBetween(1, 6),
+            'rating' => $this->faker->numberBetween(1, 5),
+            'comment' => $this->faker->realText,
         ];
     }
 }

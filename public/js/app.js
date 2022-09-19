@@ -4020,7 +4020,20 @@ module.exports = {
 
 __webpack_require__(/*! ./bootstrap */ "./resources/js/bootstrap.js");
 
-__webpack_require__(/*! alpinejs */ "./node_modules/alpinejs/dist/alpine.js");
+__webpack_require__(/*! alpinejs */ "./node_modules/alpinejs/dist/alpine.js"); // window.Vue = require('vue');
+// // import Vue from 'vue';
+// const app = Vue.createApp({
+//   methods: {
+//     setRating(rating) {
+//       this.rating = rating;
+//     }
+//   },
+//   data: {
+//     rating: 0
+//   }
+// });
+// app.component('star-rating', StarRating);
+// app.mount('#app');
 
 /***/ }),
 

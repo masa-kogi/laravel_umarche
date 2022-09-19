@@ -9,6 +9,7 @@ use App\Models\SecondaryCategory;
 use App\Models\Image;
 use App\Models\Stock;
 use App\Models\User;
+use App\Models\ItemReview;
 use Illuminate\Support\Facades\DB;
 
 
@@ -29,6 +30,10 @@ class Product extends Model
         'image3',
         'image4',
     ];
+
+    // protected $with = ['reviews'];
+
+    // protected $appends = ['avg_rating'];
 
     public function shop()
     {
@@ -65,11 +70,21 @@ class Product extends Model
         return $this->hasMany(Stock::class);
     }
 
+    public function reviews()
+    {
+        return $this->hasMany(ItemReview::class);
+    }
+
     public function users()
     {
         return $this->belongsToMany(User::class, 'carts')
             ->withPivot(['id', 'quantity']);
     }
+
+    // public function getAverageRatingAttribute()
+    // {
+    //     return $this->attributes['avg_raging'] = $this->reviews->avg('raging');
+    // }
 
     public function scopeAvailableItems($query)
     {
@@ -78,15 +93,22 @@ class Product extends Model
             ->groupBy('product_id')
             ->having('quantity', '>', 1);
 
+        $ratings = DB::table('item_reviews')
+            ->select('item_id', DB::raw('avg(rating) as avg_rating'))
+            ->groupBy(('item_id'));
+
         return $query->joinSub($stocks, 'stock', function ($join) {
             $join->on('products.id', '=', 'stock.product_id');
         })
+            ->joinSub($ratings, 'rating', function ($join) {
+                $join->on('products.id', '=', 'rating.item_id');
+            })
             ->join('shops', 'products.shop_id', '=', 'shops.id')
             ->join('secondary_categories', 'products.secondary_category_id', '=', 'secondary_categories.id')
             ->join('images as image1', 'products.image1', '=', 'image1.id')
             ->where('shops.is_selling', true)
             ->where('products.is_selling', true)
-            ->select('products.id as id', 'products.name as name', 'products.price', 'products.sort_order as sort_order', 'products.information', 'secondary_categories.name as category', 'image1.filename as filename');
+            ->select('products.id as id', 'products.name as name', 'products.price', 'products.sort_order as sort_order', 'products.information', 'secondary_categories.name as category', 'image1.filename as filename', 'rating.avg_rating as avg_rating');
     }
 
     public function scopeSortOrder($query, $sortOrder)

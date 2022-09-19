@@ -5,6 +5,7 @@ use App\Http\Controllers\ComponentTestController;
 use App\Http\Controllers\lifeCycleTestController;
 use App\Http\Controllers\User\ItemController;
 use App\Http\Controllers\User\CartController;
+use App\Http\Controllers\User\ItemReviewController;
 
 
 /*
@@ -38,6 +39,9 @@ Route::prefix('cart')
         Route::get('success', [CartController::class, 'success'])->name('cart.success');
         Route::get('cancel', [CartController::class, 'cancel'])->name('cart.cancel');
     });
+
+Route::resource('items.reviews', ItemReviewController::class)
+->middleware('auth:users');
 
 // Route::get('/dashboard', function () {
 //     return view('user.dashboard');

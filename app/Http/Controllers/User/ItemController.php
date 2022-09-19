@@ -42,10 +42,12 @@ class ItemController extends Controller
         $categories = PrimaryCategory::with("secondary")->get();
 
         $products = Product::availableItems()
+            // ->getAverageRatingAttribute()
             ->selectCategory($request->category ?? '0')
             ->searchKeyword($request->keyword)
             ->sortOrder($request->sort)->paginate($request->pagination ?? '20');
 
+        // dd($products);
         return view('user.index', compact('products', 'categories'));
     }
 
@@ -54,11 +56,14 @@ class ItemController extends Controller
         $product = Product::findOrFail($id);
         $quantity = Stock::where('product_id', $product->id)
             ->sum('quantity');
+        $rating = round(DB::table('item_reviews')
+            ->where('item_id', $product->id)
+            ->avg('rating'), 1);
 
         if ($quantity > 9) {
             $quantity = 9;
         }
 
-        return view('user.show', compact('product', 'quantity'));
+        return view('user.show', compact('product', 'quantity', 'rating'));
     }
 }

@@ -58,8 +58,29 @@
                         </div>
                         <div class="md:w-1/2 ml-4">
                             <h2 class="mb-4 text-sm title-font text-gray-500 tracking-widest">{{ $product->category->name }}</h2>
-                            <h1 class="mb-4 text-gray-900 text-3xl title-font font-medium">{{ $product->name }}</h1>
-                            <p class="mb-4 leading-relaxed">{{ $product->information }}</p>
+                            <div class="flex justify-between">
+                                <h1 class="mb-4 text-gray-900 text-3xl title-font font-medium"><span class="text-sm text-gray-500">商品名: </span>{{ $product->name }}</h1>
+                                <!-- <div>
+                                    <div id="star" class="flex"></div>
+                                </div> -->
+                                <div class="flex items-center">
+                                    <div class="text-sm text-gray-500 mr-2">評価: </div>
+                                    <div id="star-avg-rating" class="flex" data-score="{{ $rating }}"></div>
+                                    <div class="ml-2">{{ $rating }}</div>
+                                </div>
+                            </div>
+                            <p class="mb-4 leading-relaxed">
+                                @if(strlen($product->information) > 200)
+                                {{ Str::limit($product->information, 200, '') }}
+                                <span class="read-more-show hide_content text-blue-600">続きを見る</span>
+                                <span class="read-more-content">
+                                    {{ Str::substr($product->information, 50, strlen($product->information)) }}
+                                    <span class="read-more-hide hide_content  text-blue-600">隠す</span>
+                                </span>
+                                @else
+                                {{ $product->information }}
+                                @endif
+                            </p>
                             <div class="flex justify-around items-center">
                                 <div>
                                     <span class="title-font font-medium text-2xl text-gray-900">{{ number_format($product->price) }}</span><span class="text-sm text-gray-700">円(税込)</span>
@@ -82,6 +103,8 @@
                             </div>
                         </div>
                     </div>
+                    <a href=" {{ route('user.items.reviews.index', ['item' => $product->id ]) }}">全てのレビューを見る</a>
+
                     <div class="border-t border-gray-400 my-8"></div>
                     <div class="mb-4 text-center">この商品を販売しているショップ</div>
                     <div class="mb-4 text-center">{{ $product->shop->name }}</div>
@@ -120,4 +143,7 @@
         </div>
     </div>
     <script src="{{ mix('js/swiper.js') }}"></script>
+    <script src="{{ mix('js/app.js') }}"></script>
+    <script src="{{ mix('js/read-more.js') }}"></script>
+    <script src="{{ mix('js/star-rating.js') }}"></script>
 </x-app-layout>
