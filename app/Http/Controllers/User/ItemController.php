@@ -7,10 +7,9 @@ use Illuminate\Http\Request;
 use App\Models\PrimaryCategory;
 use App\Models\Product;
 use App\Models\Stock;
+use App\Models\ItemReview;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Mail;
-use App\Mail\TestMail;
-use App\Jobs\SendThanksMail;
+
 
 class ItemController extends Controller
 {
@@ -64,6 +63,11 @@ class ItemController extends Controller
             $quantity = 9;
         }
 
-        return view('user.show', compact('product', 'quantity', 'avgScore'));
+        $reviews = ItemReview::where('item_id', $product->id)
+            ->orderBy('created_at', 'desc')
+            ->take(3)
+            ->get();
+
+        return view('user.show', compact('product', 'quantity', 'avgScore', 'reviews'));
     }
 }

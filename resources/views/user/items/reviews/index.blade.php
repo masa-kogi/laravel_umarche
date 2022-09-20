@@ -16,8 +16,8 @@
                             @foreach($reviews as $review)
                             <div class="-my-8 divide-y-2 divide-gray-100">
                                 <div class="py-8 flex flex-wrap md:flex-nowrap">
-                                    <div class="md:w-64 md:mb-0 mb-6 flex-shrink-0 flex flex-col">
-                                        <span class="font-semibold title-font text-gray-700">ユーザー名: {{ $review->user->name }}</span>
+                                    <div class="md:w-64 md:mb-0 mb-6 flex flex-col">
+                                        <span class="font-semibold text-gray-700">ユーザー名: {{ $review->user->name }}</span>
                                         <span class="mt-1 text-gray-500 text-sm">{{ $review->created_at }}</span>
                                         <!-- <span class="mt-1 text-gray-700 text-md text-center">評価: {{ $review->rating }}</span> -->
                                         <div class="flex items-center">

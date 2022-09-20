@@ -14,6 +14,9 @@
                         <div>
                             <span class="text-gray-500">商品名: </span>{{ $item->name }}
                         </div>
+                        <div>
+                            <span class="text-gray-500">メーカー名: </span>{{ $item->maker->name }}
+                        </div>
                         <div class="flex items-center">
                             <div class="text-sm text-gray-500 mr-2">評価: </div>
                             <div id="star-avg-score" class="flex" data-score="{{ $avgScore }}"></div>

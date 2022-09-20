@@ -70,24 +70,24 @@
                 <div class="p-6 bg-white border-b border-gray-200">
                     <div class="flex flex-wrap">
                         @foreach($products as $product)
-                        <div class="w-1/4 p-2 md:p-4">
+                        <div class="w-1/2 md:w-1/4 p-2 md:p-4">
                             <a href="{{ route('user.items.show', ['item' => $product->id ]) }}">
-                                <div class="border rounded-md p-2 md:p-4">
-                                    <x-thumbnail filename="{{ $product->filename ?? '' }}" type="products" />
-                                    <div class="mt-4">
-                                        <h3 class="text-gray-500 text-xs tracking-widest title-font mb-1">{{ $product->category }}</h3>
-
-                                        <h2 class="text-gray-900 title-font text-lg font-medium">{{ $product->name }}</h2>
-                                        <!-- <h2 class="text-gray-900 title-font text-lg font-medium">{{ round($product->avg_score, 1) }}<span class="text-sm">点</span></h2> -->
-                                        <div class="flex items-center">
-                                            <div class="text-sm text-gray-500 mr-2">評価: </div>
-                                            <div class="star-avg-score-index flex" data-score="{{ $product->avg_score }}"></div>
-                                            <div class="ml-2">{{ $product->avg_score }}</div>
-                                        </div>
-                                        <p class="mt-1">{{ number_format($product->price) }}<span class="text-sm text-gray-700">円(税込)</span></p>
-                                    </div>
-                                </div>
+                                <x-thumbnail filename="{{ $product->filename ?? '' }}" type="products" />
                             </a>
+                            <div class="border rounded-md p-2 md:p-4">
+                                <div>
+                                    <h3 class="text-gray-500 text-xs tracking-widest title-font w-full mb-1">{{ $product->category }}</h3>
+                                    <div class="flex justify-between">
+                                        <h2 class="text-gray-900 title-font text-sm md:text-lg font-medium">{{ $product->name }}</h2>
+                                        <h3 class="text-gray-500 title-font text-sm md:text-md font-medium">{{ $product->maker }}</h3>
+                                    </div>
+                                    <div class="flex justify-between items-center">
+                                        <div class="star-avg-score-index flex w-5" data-score="{{ $product->avg_score }}"></div>
+                                        <div class="ml-2">{{ $product->avg_score }}</div>
+                                    </div>
+                                    <p class="mt-1">{{ number_format($product->price) }}<span class="text-sm text-gray-700">円(税込)</span></p>
+                                </div>
+                            </div>
                         </div>
                         @endforeach
                     </div>
