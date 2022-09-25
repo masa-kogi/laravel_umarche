@@ -31380,6 +31380,18 @@ select {
   will-change: transform;
 }
 
+.read-more-show {
+  cursor: pointer;
+}
+
+.read-more-hide {
+  cursor: pointer;
+}
+
+.hide_content {
+  display: none;
+}
+
 @media (min-width: 640px) {
   .sm\:container {
     width: 100%;

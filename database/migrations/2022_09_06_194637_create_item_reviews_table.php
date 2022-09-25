@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateShopsTable extends Migration
+class CreateItemReviewsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,16 +13,18 @@ class CreateShopsTable extends Migration
      */
     public function up()
     {
-        Schema::create('shops', function (Blueprint $table) {
+        Schema::create('item_reviews', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('owner_id')
+            $table->foreignId('item_id')
+                ->constrained('products')
+                ->onUpdate('cascade')
+                ->onDelete('cascade');
+            $table->foreignId('user_id')
                 ->constrained()
                 ->onUpdate('cascade')
                 ->onDelete('cascade');
-            $table->string('name');
-            $table->text('information');
-            $table->string('filename');
-            $table->boolean('is_selling');
+            $table->text('comment');
+            $table->float('score');
             $table->timestamps();
         });
     }
@@ -34,7 +36,6 @@ class CreateShopsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('products');
-        Schema::dropIfExists('shops');
+        Schema::dropIfExists('item_reviews');
     }
 }

@@ -9,6 +9,8 @@ use App\Models\SecondaryCategory;
 use App\Models\Image;
 use App\Models\Stock;
 use App\Models\User;
+use App\Models\Maker;
+use App\Models\ItemReview;
 use Illuminate\Support\Facades\DB;
 
 
@@ -18,6 +20,7 @@ class Product extends Model
 
     protected $fillable = [
         'shop_id',
+        'maker_id',
         'name',
         'information',
         'price',
@@ -29,6 +32,10 @@ class Product extends Model
         'image3',
         'image4',
     ];
+
+    // protected $with = ['reviews'];
+
+    // protected $appends = ['avg_rating'];
 
     public function shop()
     {
@@ -65,10 +72,20 @@ class Product extends Model
         return $this->hasMany(Stock::class);
     }
 
+    public function reviews()
+    {
+        return $this->hasMany(ItemReview::class);
+    }
+
     public function users()
     {
         return $this->belongsToMany(User::class, 'carts')
             ->withPivot(['id', 'quantity']);
+    }
+
+    public function maker()
+    {
+        return $this->belongsTo(Maker::class);
     }
 
     public function scopeAvailableItems($query)
@@ -78,15 +95,23 @@ class Product extends Model
             ->groupBy('product_id')
             ->having('quantity', '>', 1);
 
+        $avgScores = DB::table('item_reviews')
+            ->select('item_id', DB::raw('round(avg(score), 1) as avg_score'))
+            ->groupBy(('item_id'));
+
         return $query->joinSub($stocks, 'stock', function ($join) {
             $join->on('products.id', '=', 'stock.product_id');
         })
+            ->joinSub($avgScores, 'avg_score', function ($join) {
+                $join->on('products.id', '=', 'avg_score.item_id');
+            })
             ->join('shops', 'products.shop_id', '=', 'shops.id')
             ->join('secondary_categories', 'products.secondary_category_id', '=', 'secondary_categories.id')
             ->join('images as image1', 'products.image1', '=', 'image1.id')
+            ->join('makers', 'products.maker_id', '=', 'makers.id')
             ->where('shops.is_selling', true)
             ->where('products.is_selling', true)
-            ->select('products.id as id', 'products.name as name', 'products.price', 'products.sort_order as sort_order', 'products.information', 'secondary_categories.name as category', 'image1.filename as filename');
+            ->select('products.id as id', 'products.name as name', 'products.price', 'products.sort_order as sort_order', 'products.information', 'secondary_categories.name as category', 'image1.filename as filename', 'avg_score.avg_score as avg_score', 'makers.name as maker');
     }
 
     public function scopeSortOrder($query, $sortOrder)

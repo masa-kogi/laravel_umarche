@@ -18,10 +18,13 @@
         "lodash": "^4.17.19",
         "postcss": "^8.2.1",
         "postcss-import": "^12.0.1",
-        "tailwindcss": "^2.0.2"
+        "tailwindcss": "^2.0.2",
+        "vue-loader": "^16.8.3"
     },
     "dependencies": {
+        "jquery": "^3.6.1",
         "micromodal": "^0.4.10",
+        "raty-js": "^3.1.1",
         "swiper": "^6.7.0"
     }
 }

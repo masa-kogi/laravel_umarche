@@ -7,17 +7,16 @@ use Illuminate\Http\Request;
 use App\Models\PrimaryCategory;
 use App\Models\Product;
 use App\Models\Stock;
+use App\Models\ItemReview;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Mail;
-use App\Mail\TestMail;
-use App\Jobs\SendThanksMail;
+
 
 class ItemController extends Controller
 {
 
     public function __construct()
     {
-        $this->middleware('auth:users');
+        // $this->middleware('auth:users');
 
         $this->middleware(function ($request, $next) {
             $id = $request->route()->parameter('item');
@@ -42,10 +41,12 @@ class ItemController extends Controller
         $categories = PrimaryCategory::with("secondary")->get();
 
         $products = Product::availableItems()
+            // ->getAverageRatingAttribute()
             ->selectCategory($request->category ?? '0')
             ->searchKeyword($request->keyword)
             ->sortOrder($request->sort)->paginate($request->pagination ?? '20');
 
+        // dd($products);
         return view('user.index', compact('products', 'categories'));
     }
 
@@ -54,11 +55,19 @@ class ItemController extends Controller
         $product = Product::findOrFail($id);
         $quantity = Stock::where('product_id', $product->id)
             ->sum('quantity');
+        $avgScore = round(DB::table('item_reviews')
+            ->where('item_id', $product->id)
+            ->avg('score'), 1);
 
         if ($quantity > 9) {
             $quantity = 9;
         }
 
-        return view('user.show', compact('product', 'quantity'));
+        $reviews = ItemReview::where('item_id', $product->id)
+            ->orderBy('created_at', 'desc')
+            ->take(3)
+            ->get();
+
+        return view('user.show', compact('product', 'quantity', 'avgScore', 'reviews'));
     }
 }
