@@ -90,7 +90,7 @@
                                 <div>
                                     <span class="title-font font-medium text-2xl text-gray-900">{{ number_format($product->price) }}</span><span class="text-sm text-gray-700">円(税込)</span>
                                 </div>
-                                <form method="post" action="{{ route('user.cart.add') }}">
+                                <form method="post" @auth action="{{ route('user.cart.add') }}" @else action="{{ route('user.guest.cart.add') }}" @endauth>
                                     @csrf
                                     <div class="flex items-center">
                                         <span class="mr-3">数量</span>
@@ -111,7 +111,8 @@
                     <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                         <div class="w-2/3 mx-auto border rounded mt-4 bg-white border-gray-200">
                             <section class="text-gray-600 body-font overflow-hidden">
-                                <div class="container px-5 py-24 mx-auto">
+                                <div class="container px-5 py-5 mx-auto">
+                                    <div class="flex justify-end"><img class="block h-8 w-auto fill-current text-gray-600 mr-2" src="{{ asset("images/speech_bubble.svg") }}" alt="">{{ count($reviews) }}件</div>
                                     <div class="text-right mb-4 text-blue-600"><a href=" {{ route('user.items.reviews.index', ['item' => $product->id ]) }}">全てのレビューを見る</a></div>
                                     @foreach($reviews as $review)
                                     <div class="-my-8 divide-y-2 divide-gray-100">
@@ -119,7 +120,6 @@
                                             <div class="md:w-64 md:mb-0 mb-6 flex-shrink-0 flex flex-col">
                                                 <span class="font-semibold title-font text-gray-700">ユーザー名: {{ $review->user->name }}</span>
                                                 <span class="mt-1 text-gray-500 text-sm">{{ $review->created_at }}</span>
-                                                <!-- <span class="mt-1 text-gray-700 text-md text-center">評価: {{ $review->rating }}</span> -->
                                                 <div class="flex items-center">
                                                     <div class="text-sm text-gray-500 mr-2">評価: </div>
                                                     <div class="star-score flex" data-score="{{ $review->score }}"></div>

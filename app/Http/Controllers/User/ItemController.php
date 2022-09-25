@@ -16,7 +16,7 @@ class ItemController extends Controller
 
     public function __construct()
     {
-        $this->middleware('auth:users');
+        // $this->middleware('auth:users');
 
         $this->middleware(function ($request, $next) {
             $id = $request->route()->parameter('item');

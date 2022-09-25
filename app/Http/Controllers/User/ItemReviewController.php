@@ -16,10 +16,10 @@ use Throwable;
 class ItemReviewController extends Controller
 {
 
-    public function __construct()
-    {
-        $this->middleware('auth:users');
-    }
+    // public function __construct()
+    // {
+    //     $this->middleware('auth:users');
+    // }
     /**
      * Display a listing of the resource.
      *

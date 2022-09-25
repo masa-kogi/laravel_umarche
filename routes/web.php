@@ -5,6 +5,7 @@ use App\Http\Controllers\ComponentTestController;
 use App\Http\Controllers\lifeCycleTestController;
 use App\Http\Controllers\User\ItemController;
 use App\Http\Controllers\User\CartController;
+use App\Http\Controllers\User\GuestCartController;
 use App\Http\Controllers\User\ItemReviewController;
 
 
@@ -23,16 +24,15 @@ Route::get('/', function () {
     return view('user.welcome');
 });
 
-Route::middleware('auth:users')
-    ->group(function () {
-        Route::get('/', [ItemController::class, 'index'])->name('items.index');
-        Route::get('show/{item}', [ItemController::class, 'show'])->name('items.show');
-    });
+
+Route::get('/', [ItemController::class, 'index'])->name('items.index');
+Route::get('show/{item}', [ItemController::class, 'show'])->name('items.show');
+
 
 Route::prefix('cart')
     ->middleware('auth:users')
     ->group(function () {
-        Route::get('/', [CartController::class, 'index'])->name('cart.index');
+        Route::get('/', [CartController::class, 'index'])->name('cart.index')->withoutMiddleware('auth:users');
         Route::post('add', [CartController::class, 'add'])->name('cart.add');
         Route::post('delete/{item}', [CartController::class, 'delete'])->name('cart.delete');
         Route::get('checkout', [CartController::class, 'checkout'])->name('cart.checkout');
@@ -40,8 +40,16 @@ Route::prefix('cart')
         Route::get('cancel', [CartController::class, 'cancel'])->name('cart.cancel');
     });
 
+Route::prefix('guest.cart')
+    ->group(function () {
+        Route::get('/', [GuestCartController::class, 'index'])->name('guest.cart.index');
+        Route::post('add', [GuestCartController::class, 'add'])->name('guest.cart.add');
+        Route::post('delete/{item}', [GuestCartController::class, 'delete'])->name('guest.cart.delete');
+        Route::get('checkout', [GuestCartController::class, 'checkout'])->name('guest.cart.checkout')->middleware('auth:users');
+    });
+
 Route::resource('items.reviews', ItemReviewController::class)
-->middleware('auth:users');
+    ->middleware('auth:users');
 
 // Route::get('/dashboard', function () {
 //     return view('user.dashboard');
