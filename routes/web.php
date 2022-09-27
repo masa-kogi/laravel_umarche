@@ -7,6 +7,7 @@ use App\Http\Controllers\User\ItemController;
 use App\Http\Controllers\User\CartController;
 use App\Http\Controllers\User\GuestCartController;
 use App\Http\Controllers\User\ItemReviewController;
+use App\Http\Controllers\User\OrderController;
 
 
 /*
@@ -28,6 +29,17 @@ Route::get('/', function () {
 Route::get('/', [ItemController::class, 'index'])->name('items.index');
 Route::get('show/{item}', [ItemController::class, 'show'])->name('items.show');
 
+Route::prefix('items')
+    ->middleware('auth:users')
+    ->group(function () {
+        Route::get('{item}/reviews', [ItemReviewController::class, 'index'])->name('items.reviews.index')->withoutMiddleware('auth:users');
+        Route::get('{item}/reviews/create', [ItemReviewController::class, 'create'])->name('items.reviews.create');
+        Route::post('{item}/reviews/store', [ItemReviewController::class, 'store'])->name('items.reviews.store');
+        Route::get('{item}/reviews/{review}/edit', [ItemReviewController::class, 'edit'])->name('items.reviews.edit');
+        Route::put('{item}/reviews/{review}', [ItemReviewController::class, 'update'])->name('items.reviews.update');
+        Route::delete('{item}/reviews/{review}', [ItemReviewController::class, 'update'])->name('items.reviews.update');
+    });
+
 
 Route::prefix('cart')
     ->middleware('auth:users')
@@ -48,9 +60,14 @@ Route::prefix('guest.cart')
         Route::get('checkout', [GuestCartController::class, 'checkout'])->name('guest.cart.checkout')->middleware('auth:users');
     });
 
-Route::resource('items.reviews', ItemReviewController::class)
-    ->middleware('auth:users');
+// Route::resource('items.reviews', ItemReviewController::class)
+//     ->middleware('auth:users');
 
+Route::prefix('order')
+    ->middleware('auth:users')
+    ->group(function () {
+        Route::get('/', [OrderController::class, 'index'])->name('order.index');
+    });
 // Route::get('/dashboard', function () {
 //     return view('user.dashboard');
 // })->middleware(['auth:users'])->name('dashboard');

@@ -15,7 +15,7 @@ class ItemReviewFactory extends Factory
     public function definition()
     {
         return [
-            'item_id' => function () {
+            'product_id' => function () {
                 return Product::all()->random();
             },
             'user_id' => $this->faker->numberBetween(1, 6),

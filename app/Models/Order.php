@@ -4,19 +4,15 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use App\Models\Product;
 use App\Models\User;
+use App\Models\Product;
 
-
-class ItemReview extends Model
+class Order extends Model
 {
     use HasFactory;
 
     protected $fillable = [
-        'product_id',
         'user_id',
-        'score',
-        'comment',
     ];
 
     public function user()
@@ -24,8 +20,9 @@ class ItemReview extends Model
         return $this->belongsTo(User::class);
     }
 
-    public function item()
+    public function products()
     {
-        return $this->belongsTo(Product::class);
+        return $this->belongsToMany(Product::class, 'order_details')
+            ->withPivot(['id', 'quantity']);
     }
 }
