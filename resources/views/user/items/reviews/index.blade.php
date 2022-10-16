@@ -14,18 +14,18 @@
                     <section class="text-gray-600 body-font overflow-hidden">
                         <div class="container px-5 py-5 mx-auto">
                             @foreach($reviews as $review)
-                            <div class="-my-8 divide-y-2 divide-gray-100">
+                            <div class="-my-2 divide-gray-200 border-b-2">
                                 <div class="py-8 flex flex-wrap md:flex-nowrap">
-                                    <div class="md:w-64 md:mb-0 mb-6 flex flex-col">
-                                        <span class="font-semibold text-gray-700">ユーザー名: {{ $review->user->name }}</span>
-                                        <span class="mt-1 text-gray-500 text-sm">{{ $review->created_at }}</span>
+                                    <div class="md:w-64 md:mb-0 mb-6 flex-shrink-0 flex flex-col border-r-2">
+                                        <span class="font-semibold title-font text-gray-700">ユーザー名: {{ $review->user->name }}</span>
+                                        <span class="mt-1 text-gray-500 text-sm">{{ $review->created_at->format('Y/m/d') }}</span>
                                         <div class="flex items-center">
                                             <div class="text-sm text-gray-500 mr-2">評価: </div>
                                             <div class="star-score flex" data-score="{{ $review->score }}"></div>
                                             <div class="ml-2">{{ $review->score }}</div>
                                         </div>
                                     </div>
-                                    <div class="md:flex-grow">
+                                    <div class="md:flex-grow ml-2">
                                         <p class="leading-relaxed">
                                             @if(strlen($review->comment) > 200)
                                             {{ Str::limit($review->comment, 200, '') }}
@@ -39,12 +39,12 @@
                                             @endif
                                         </p>
                                     </div>
-                                    <div class="my-auto">
-                                        @if($user->id === $review->user_id)
+
+                                    <div @if(Auth::id()===$review->user_id) class="my-auto" @else class="invisible" @endif>
                                         <button onclick="location.href='{{ route('user.items.reviews.edit', ['item' => $item->id, 'review' => $review->id]) }}'" class="text-white bg-indigo-400 border-0 py-2 px-4 w-20 focus:outline-none hover:bg-indigo-500 rounded">編集
                                         </button>
-                                        @endif
                                     </div>
+
                                 </div>
                             </div>
                             @endforeach
@@ -55,9 +55,9 @@
         </div>
         <div class="p-2 w-full flex justify-around mt-4">
             <button type="button" onclick="location.href='{{ route('user.items.show', ['item' => $item->id]) }}'" class="bg-gray-200 border-0 py-2 px-8 focus:outline-none hover:bg-gray-400 rounded text-lg">戻る</button>
-            @auth
+            @if($qualifiedReviewer)
             <button onclick="location.href='{{ route('user.items.reviews.create', ['item' => $item->id ]) }}'" class="mt-2 text-white bg-indigo-500 border-0 py-2 px-6 focus:outline-none hover:bg-indigo-600 rounded">レビューを書く</button>
-            @endauth
+            @endif
         </div>
 
     </div>

@@ -7,10 +7,17 @@ use Illuminate\Http\Request;
 use App\Models\Cart;
 use App\Models\User;
 use App\Models\Stock;
+use App\Models\Order;
+use App\Models\OrderDetail;
 use App\Services\CartService;
 use Illuminate\Support\Facades\Auth;
 use App\Jobs\SendThanksMail;
 use App\Jobs\SendOrderedMail;
+use Illuminate\Support\Facades\DB; // QueryBuilder
+use Throwable;
+use Illuminate\Support\Facades\Log;
+use App\Http\Controllers\User\OrderController;
+
 
 
 class CartController extends Controller
@@ -24,7 +31,6 @@ class CartController extends Controller
         foreach ($products as $product) {
             $totalPrice += $product->price * $product->pivot->quantity;
         }
-
 
         return view('user.cart', compact('products', 'totalPrice'));
     }
@@ -113,15 +119,23 @@ class CartController extends Controller
         ////
         $items = Cart::where('user_id', Auth::id())->get();
         $products = CartService::getItemInCart($items);
+        // dd($products);
         $user = User::findOrFail(Auth::id());
         SendThanksMail::dispatch($products, $user);
         foreach ($products as $product) {
             SendOrderedMail::dispatch($product, $user);
         }
-        // dd('ユーザーメール送信テスト');
-        ////
+
+        OrderController::create($products);
         Cart::where('user_id', Auth::id())->delete();
-        return redirect()->route('user.items.index');
+
+        return redirect()
+            ->route('user.items.index')
+            ->with([
+                'message' => '商品の購入が完了しました',
+                'status' => 'info'
+            ]);
+        // return redirect()->route('user.order.create')->with(compact('products'));
     }
 
     public function cancel()

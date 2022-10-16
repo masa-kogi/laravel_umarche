@@ -7,6 +7,7 @@ use App\Models\ItemReview;
 use Illuminate\Http\Request;
 use App\Models\Product;
 use App\Models\User;
+use App\Models\Order;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB; // QueryBuilder
 use Illuminate\Support\Facades\Log;
@@ -18,7 +19,7 @@ class ItemReviewController extends Controller
 
     // public function __construct()
     // {
-    //     $this->middleware('auth:users');
+    //     $this->middleware('auth:users')->except('index');
     // }
     /**
      * Display a listing of the resource.
@@ -27,20 +28,23 @@ class ItemReviewController extends Controller
      */
     public function index($id)
     {
-        $user = User::findOrFail(Auth::id());
-        // itemの情報を取得する
+        $qualifiedReviewer = false;
         $item = Product::findOrFail($id);
 
-        // itemのレビューを取得する
-        $reviews = ItemReview::where('item_id', $item->id)
+        if (Auth::id()) {
+            $user = User::find(Auth::id());
+            $qualifiedReviewer = $this->isQualifiedReviewer($user, $item);
+        }
+
+        $reviews = ItemReview::where('product_id', $item->id)
             ->orderBy('created_at', 'desc')
             ->get();
 
         $avgScore = round(DB::table('item_reviews')
-            ->where('item_id', $item->id)
+            ->where('product_id', $item->id)
             ->avg('score'), 1);
 
-        return view('user.items.reviews.index', compact('user', 'item', 'reviews', 'avgScore'));
+        return view('user.items.reviews.index', compact('item', 'qualifiedReviewer', 'reviews', 'avgScore'));
     }
 
     /**
@@ -52,9 +56,16 @@ class ItemReviewController extends Controller
     {
         $user = User::findOrFail(Auth::id());
         $item = Product::findOrFail($id);
+        if (!$this->isQualifiedReviewer($user, $item)) {
+            abort(404);
+        }
+        // dd($qualifiedReviewers);
+        // if ($this->isUnqualifiedReviewer($user, $item)) {
+        //     abort(404);
+        // }
 
         $avgScore = round(DB::table('item_reviews')
-            ->where('item_id', $item->id)
+            ->where('product_id', $item->id)
             ->avg('score'), 1);
 
         return view('user.items.reviews.create', compact('user', 'item', 'avgScore'));
@@ -68,11 +79,11 @@ class ItemReviewController extends Controller
      */
     public function store(Request $request, $id)
     {
-        // dd($request);
+
         try {
             DB::transaction(function () use ($request, $id) {
                 ItemReview::create([
-                    'item_id' => $id,
+                    'product_id' => $id,
                     'user_id' => Auth::id(),
                     'score' => round($request->score, 1),
                     'comment' => $request->comment,
@@ -97,19 +108,21 @@ class ItemReviewController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
-    {
-        //
-    }
 
 
     public function edit($item_id, $review_id)
     {
+        $user = User::findOrFail(Auth::id());
         $item = Product::findOrFail($item_id);
+
+        if ($this->QualifiedReviewer($user, $item)) {
+            abort(404);
+        }
+
         $review = ItemReview::findOrFail($review_id);
 
         $avgScore = round(DB::table('item_reviews')
-            ->where('item_id', $item->id)
+            ->where('product_id', $item->id)
             ->avg('score'), 1);
 
         return view('user.items.reviews.edit', compact(
@@ -165,5 +178,11 @@ class ItemReviewController extends Controller
                 'message' => 'レビューを削除しました',
                 'status' => 'alert'
             ]);
+    }
+
+    private function isQualifiedReviewer($user, $item)
+    {
+        $qualifiedReviewers = $item->orders()->pluck('user_id')->toArray();
+        return in_array($user->id, $qualifiedReviewers);
     }
 }

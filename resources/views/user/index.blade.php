@@ -1,4 +1,5 @@
 <x-app-layout>
+    <x-flash-message status="session('status')" />
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-gray-800 leading-tight">
             商品一覧
@@ -19,7 +20,7 @@
                                 @endforeach
                         </select>
                         <div class="flex space-x-2 items-center">
-                            <div><input name="keyword" class="border border-gray-500 py-2" type="text" placeholder="キーワードを入力"></div>
+                            <div><input name="keyword" class="border border-gray-500 py-2" type="search" placeholder="キーワードを入力"></div>
                             <div><button class="ml-auto text-white bg-indigo-500 border-0 py-2 px-6 focus:outline-none hover:bg-indigo-600 rounded">検索する</button></div>
                         </div>
                     </div>
@@ -69,6 +70,9 @@
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="p-6 bg-white border-b border-gray-200">
                     <div class="flex flex-wrap">
+                        @if($products->isEmpty())
+                        検索条件に一致するアイテムが見つかりません
+                        @endif
                         @foreach($products as $product)
                         <div class="w-1/2 md:w-1/3 lg:w-1/4 p-2 md:p-4">
                             <a href="{{ route('user.items.show', ['item' => $product->id ]) }}">

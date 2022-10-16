@@ -5,7 +5,7 @@
             <div class="flex">
                 <!-- Logo -->
                 <div class="flex-shrink-0 flex items-center">
-                    <div class="w-12">
+                    <div class="w-36">
                         <a href="{{ route('user.items.index') }}">
                             <x-application-logo class="block h-10 w-auto fill-current text-gray-600" />
                         </a>
@@ -20,6 +20,9 @@
                     @auth
                     <x-nav-link :href="route('user.cart.index')" :active="request()->routeIs('user.cart.index')">
                         カートを表示
+                    </x-nav-link>
+                    <x-nav-link :href="route('user.order.index')" :active="request()->routeIs('user.order.index')">
+                        購入履歴
                     </x-nav-link>
                     @else
                     <x-nav-link :href="route('user.guest.cart.index')" :active="request()->routeIs('user.guest.cart.index')">
@@ -59,6 +62,14 @@
                         </form>
                     </x-slot>
                 </x-dropdown>
+            </div>
+            @else
+            <div class="hidden top-0 right-0 px-6 py-4 sm:block">
+                <a href="{{ route('user.login') }}" class="text-sm text-gray-700 dark:text-gray-500 underline">{{ __('Login') }}</a>
+
+                @if (Route::has('user.register'))
+                <a href="{{ route('user.register') }}" class="ml-4 text-sm text-gray-700 dark:text-gray-500 underline">{{ __('Register') }}</a>
+                @endif
             </div>
             @endauth
 

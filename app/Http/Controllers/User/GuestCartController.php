@@ -55,7 +55,6 @@ class GuestCartController extends Controller
         }
         $request->session()->put('itemsInCart', $itemsInCart);
 
-
         return redirect()->route('user.guest.cart.index', compact('request'));
     }
 

@@ -56,18 +56,20 @@ class ItemController extends Controller
         $quantity = Stock::where('product_id', $product->id)
             ->sum('quantity');
         $avgScore = round(DB::table('item_reviews')
-            ->where('item_id', $product->id)
+            ->where('product_id', $product->id)
             ->avg('score'), 1);
 
         if ($quantity > 9) {
             $quantity = 9;
         }
 
-        $reviews = ItemReview::where('item_id', $product->id)
+        $reviews = ItemReview::where('product_id', $product->id)
             ->orderBy('created_at', 'desc')
             ->take(3)
             ->get();
 
-        return view('user.show', compact('product', 'quantity', 'avgScore', 'reviews'));
+        $reviewCounts = ItemReview::where('product_id', $product->id)->count();
+
+        return view('user.show', compact('product', 'quantity', 'avgScore', 'reviews', 'reviewCounts'));
     }
 }

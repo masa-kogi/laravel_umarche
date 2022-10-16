@@ -11,6 +11,7 @@ use App\Models\Stock;
 use App\Models\User;
 use App\Models\Maker;
 use App\Models\ItemReview;
+use App\Models\Order;
 use Illuminate\Support\Facades\DB;
 
 
@@ -77,6 +78,12 @@ class Product extends Model
         return $this->hasMany(ItemReview::class);
     }
 
+    public function orders()
+    {
+        return $this->belongsToMany(Order::class, 'order_details')
+            ->withPivot(['id', 'quantity']);
+    }
+
     public function users()
     {
         return $this->belongsToMany(User::class, 'carts')
@@ -96,14 +103,14 @@ class Product extends Model
             ->having('quantity', '>', 1);
 
         $avgScores = DB::table('item_reviews')
-            ->select('item_id', DB::raw('round(avg(score), 1) as avg_score'))
-            ->groupBy(('item_id'));
+            ->select('product_id', DB::raw('round(avg(score), 1) as avg_score'))
+            ->groupBy(('product_id'));
 
         return $query->joinSub($stocks, 'stock', function ($join) {
             $join->on('products.id', '=', 'stock.product_id');
         })
             ->joinSub($avgScores, 'avg_score', function ($join) {
-                $join->on('products.id', '=', 'avg_score.item_id');
+                $join->on('products.id', '=', 'avg_score.product_id');
             })
             ->join('shops', 'products.shop_id', '=', 'shops.id')
             ->join('secondary_categories', 'products.secondary_category_id', '=', 'secondary_categories.id')
